@@ -133,16 +133,16 @@ class Principal(ctk.CTk):
                         fieldbackground="#343638",
                         bordercolor="#343638",
                         borderwidth=0, font=("Roboto", 20))
-        style.map('Treeview', background=[('selected', '#227242')])
+        style.map('Treeview', background=[('selected', '#227242')],foreground=[('selected', 'black')])
         # Heading style
         style.configure("Treeview.Heading",
                         background="#3c8d40",
                         foreground="white",
                         relief="flat", font=("Roboto",25, "bold"))
         style.map("Treeview.Heading", background=[('active', '#4caf50')])
-
-
-
+        
 if __name__ == "__main__":
     app = Principal()
     app.mainloop()
+
+

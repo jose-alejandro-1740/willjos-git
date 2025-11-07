@@ -91,7 +91,7 @@ class Cliente:
         self.frmCrud.grid_columnconfigure(3, weight=1)
 
 
-        self.lblBuscarNombreCliente = ctk.CTkLabel(self.frmCrud, text="Buscar Nombre")
+        self.lblBuscarNombreCliente = ctk.CTkLabel(self.frmCrud, text="Nombre")
         self.lblBuscarNombreCliente.grid(row=1, column=0, padx=10, pady=10)
         self.frmCrud.grid_columnconfigure(0, weight=1)
 
@@ -128,17 +128,17 @@ class Cliente:
 
         self.arbolCliente.pack(expand=True, fill="both", padx=15, pady=15)
 
+        # Para la seleccion del TreeView
+        self.arbolCliente.bind("<<TreeviewSelect>>", self.onSelectCliente)
+
         # Cargamos los datos iniciales en el Treeview
         self.cargarCliente()
-
-        # Para la seleccion del TreeView
-        self.arbolCliente.bind("<<treeviewSelect>>", self.on_select_cliente)
 
     def cargarCliente(self):
         # Limpia el arbol antes de cargar nuevos datos
         self.arbolCliente.delete(*self.arbolCliente.get_children())
         # Obtiene los clientes desde la capa de negocios
-        clientes = self.capaNegocios.obtener_clientes()
+        clientes = self.capaNegocios.obtener_cliente()
         # Inserta cada cliente en el Treeview
         for cliente in clientes:
             self.arbolCliente.insert("", "end", values=cliente)
@@ -185,10 +185,11 @@ class Cliente:
         if not nombreCliente.strip():
             messagebox.showwarning("Advertencia ","Ingresar el nombre del cliente. ")
             return
-        cliente = self.capaNegocios.buscar_cliente(nombreCliente)
+        clientes = self.capaNegocios.buscar_cliente(nombreCliente)
         self.arbolCliente.delete(*self.arbolCliente.get_children())
-        if cliente: # Si es encontrado
-            self.arbolCliente.insert("","end", values=(cliente[0],cliente[1],cliente[2],cliente[3],cliente[4]))
+        if clientes: # Si es encontrado
+            for cliente in clientes:
+                self.arbolCliente.insert("","end", values=(cliente[0],cliente[1],cliente[2],cliente[3],cliente[4],cliente[5]))
             self.entBuscar.delete(0,'end')
 
         else:
@@ -242,7 +243,7 @@ class Cliente:
                 messagebox.showerror("Error", resultado)
         
         else:
-            messagebox.showwarning("advertencia ","Seleccione un Clienten para eliminar de la BD")
+            messagebox.showwarning("Advertencia ","Seleccione un Clienten para eliminar de la BD")
 
 
     def modificarCliente(self):
@@ -265,11 +266,12 @@ class Cliente:
             
             if "Exito" in resultado:
                 messagebox.showinfo("Exito", resultado)
-                self.arbolCliente.delete(*self.arbolCliente.get_children)
+                self.arbolCliente.delete(*self.arbolCliente.get_children())
                 self.cargarCliente()
+                self.arbolCliente.update()
                 self.limpiarEntrys()
             else:
                 messagebox.showerror("Error",resultado)
         else:
             messagebox.showwarning("Advertencia ","seleccione un Cliente en el Arbol")
-            
+

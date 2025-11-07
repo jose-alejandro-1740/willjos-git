@@ -50,15 +50,15 @@ class Trabajador_Proyecto:
 
     # Colocamos los Botones crud en frm Crud
 
-        self.btnInsertar = ctk.CTkButton(self.frmCrud, text="Insertar", command= self.InsertarCliente)
+        self.btnInsertar = ctk.CTkButton(self.frmCrud, text="Insertar")
         self.btnInsertar.grid(row=0, column=0, padx=5, pady=5, sticky="ew")
         self.frmCrud.grid_columnconfigure(0, weight=1)
 
-        self.btnModificar = ctk.CTkButton(self.frmCrud, text="Modificar", command= self.modificarCliente)
+        self.btnModificar = ctk.CTkButton(self.frmCrud, text="Modificar")
         self.btnModificar.grid(row=0, column=1, padx=5, pady=5, sticky="ew")
         self.frmCrud.grid_columnconfigure(1, weight=1)
 
-        self.btnEliminar = ctk.CTkButton(self.frmCrud, text="Eliminar", command= self.eliminarCliente)
+        self.btnEliminar = ctk.CTkButton(self.frmCrud, text="Eliminar")
         self.btnEliminar.grid(row=0, column=2, padx=5, pady=5, sticky="ew")
         self.frmCrud.grid_columnconfigure(2, weight=1)
 
@@ -75,7 +75,7 @@ class Trabajador_Proyecto:
         self.entBuscar.grid(row=1, column=1, padx=10, pady=10)
         self.frmCrud.grid_columnconfigure(1, weight=1)
 
-        self.btnBuscar = ctk.CTkButton(self.frmCrud, text="Buscar", command= self.buscarCliente)
+        self.btnBuscar = ctk.CTkButton(self.frmCrud, text="Buscar")
         self.btnBuscar.grid(row=1, column=2, padx=5, pady=5, sticky="ew")
         self.frmCrud.grid_columnconfigure(2, weight=1)
 
