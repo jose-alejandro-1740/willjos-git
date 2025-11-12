@@ -98,15 +98,15 @@ class Trabajador:
 
     # Colocamos los Botones crud en frm Crud
 
-        self.btnInsertar = ctk.CTkButton(self.frmCrud, text="Insertar")
+        self.btnInsertar = ctk.CTkButton(self.frmCrud, text="Insertar", command= self.insertarTrabajador)
         self.btnInsertar.grid(row=0, column=0, padx=5, pady=5, sticky="ew")
         self.frmCrud.grid_columnconfigure(0, weight=1)
 
-        self.btnModificar = ctk.CTkButton(self.frmCrud, text="Modificar")
+        self.btnModificar = ctk.CTkButton(self.frmCrud, text="Modificar", command= self.modificarTrabajador)
         self.btnModificar.grid(row=0, column=1, padx=5, pady=5, sticky="ew")
         self.frmCrud.grid_columnconfigure(1, weight=1)
 
-        self.btnEliminar = ctk.CTkButton(self.frmCrud, text="Eliminar")
+        self.btnEliminar = ctk.CTkButton(self.frmCrud, text="Eliminar", command= self.eliminarTrabajador)
         self.btnEliminar.grid(row=0, column=2, padx=5, pady=5, sticky="ew")
         self.frmCrud.grid_columnconfigure(2, weight=1)
 
@@ -115,15 +115,15 @@ class Trabajador:
         self.frmCrud.grid_columnconfigure(3, weight=1)
 
 
-        self.lblBuscarNombreCliente = ctk.CTkLabel(self.frmCrud, text="Buscar Nombre")
-        self.lblBuscarNombreCliente.grid(row=1, column=0, padx=10, pady=10)
+        self.lblBuscarNombreTrabajador = ctk.CTkLabel(self.frmCrud, text="Nombre")
+        self.lblBuscarNombreTrabajador.grid(row=1, column=0, padx=10, pady=10)
         self.frmCrud.grid_columnconfigure(0, weight=1)
 
         self.entBuscar = ctk.CTkEntry(self.frmCrud)
         self.entBuscar.grid(row=1, column=1, padx=10, pady=10)
         self.frmCrud.grid_columnconfigure(1, weight=1)
 
-        self.btnBuscar = ctk.CTkButton(self.frmCrud, text="Buscar")
+        self.btnBuscar = ctk.CTkButton(self.frmCrud, text="Buscar", command= self.buscarTrabajador)
         self.btnBuscar.grid(row=1, column=2, padx=5, pady=5, sticky="ew")
         self.frmCrud.grid_columnconfigure(2, weight=1)
 
@@ -160,6 +160,9 @@ class Trabajador:
         self.arbolTrabajador.column('#10', anchor=CENTER, width=100)
 
         self.arbolTrabajador.pack(expand=True, fill="both", padx=15, pady=15)
+ 
+    # Para la seleccion del TreeView
+        self.arbolTrabajador.bind("<<TreeviewSelect>>", self.onSelectTrabajador)
 
     # Cargamos los datos iniciales en el Treeview
         self.cargarTrabajador()
@@ -189,7 +192,7 @@ class Trabajador:
         self.entFechaIngreso.delete(0,'end')
         self.entFechaSalida.delete(0,'end')
     #Insertar Datos Cliente
-    def InsertarTrabajador(self):
+    def insertarTrabajador(self):
         # obtenemos valores de Entrys
         id_trabajador = self.entIdTrabajador.get()
         nombre = self.entNombre.get()
@@ -218,3 +221,119 @@ class Trabajador:
 
         else: 
             messagebox.showerror("Error", resultado)
+
+
+    def buscarTrabajador(self):
+        nombreTrabajador = self.entBuscar.get()
+        if not nombreTrabajador.strip():
+            messagebox.showwarning("Advertencia ","Ingresar el nombre del trabajador.")
+            return
+        trabajadores = self.capaNegocios.buscar_trabajador(nombreTrabajador)
+        self.arbolTrabajador.delete(*self.arbolTrabajador.get_children())
+        if trabajadores: # Si es encontrado
+            for trabajador in trabajadores:
+                self.arbolTrabajador.insert("","end", values=(trabajador[0],trabajador[1],trabajador[2],trabajador[3],trabajador[4],trabajador[5],trabajador[6],trabajador[7],trabajador[8], trabajador[9]))
+            self.entBuscar.delete(0,'end')
+
+        else:
+            messagebox.showinfo("Informacion"," Trabajador no encontrado")
+            self.cargarTrabajador()
+            self.entBuscar.delete(0,'end')
+
+
+    # Metodo Para Seleccionar en Treeview
+    def onSelectTrabajador(self, event):
+        itemSeleccionado = self.arbolTrabajador.selection()
+        if itemSeleccionado:
+            item = self.arbolTrabajador.item(itemSeleccionado)
+        # Obtenemos el Item  seleccionado
+            cliente = item["values"]
+        
+        # Cargamos los datos seleccionados en los entrys
+            self.entNombre.delete(0,'end')
+            self.entNombre.insert(0,cliente[1])
+
+            self.entApPaterno.delete(0,'end')
+            self.entApPaterno.insert(0,cliente[2])
+
+            self.entApMaterno.delete(0,'end')
+            self.entApMaterno.insert(0,cliente[3])
+
+            self.entDireccion.delete(0,'end')
+            self.entDireccion.insert(0,cliente[4])
+
+            self.entTelefono.delete(0,'end')
+            self.entTelefono.insert(0,cliente[5])
+
+            self.entCargo.delete(0,'end')
+            self.entCargo.insert(0,cliente[6])
+
+            self.entSueldo.delete(0,'end')
+            self.entSueldo.insert(0,cliente[7])
+
+            self.entFechaIngreso.delete(0,'end')
+            self.entFechaIngreso.insert(0,cliente[8])
+
+            self.entFechaSalida.delete(0,'end')
+            self.entFechaSalida.insert(0,cliente[9])
+
+            self.entIdTrabajador.delete(0,'end')
+            self.entIdTrabajador.insert(0,cliente[0])
+
+
+    def eliminarTrabajador(self):
+        itemSeleccionado = self.arbolTrabajador.selection()
+        if itemSeleccionado:
+            trabajador = self.arbolTrabajador.item(itemSeleccionado)
+            idTrabajador = trabajador["values"][0]
+            resultado = self.capaNegocios.eliminar_trabajador(idTrabajador)
+            if "Exito" in resultado:
+                messagebox.showinfo("Exito", resultado)
+
+                #Elimina el cliente del arbol
+                self.arbolTrabajador.delete(itemSeleccionado)
+                self.limpiarEntrys()
+
+            else:
+                messagebox.showerror("Error", resultado)
+        
+        else:
+            messagebox.showwarning("Advertencia ","Seleccione un trabajador para eliminar de la BD")
+
+
+    def modificarTrabajador(self):
+        itemSeleccionado =self.arbolTrabajador.selection()
+        if itemSeleccionado:
+            trabajador = self.arbolTrabajador.item(itemSeleccionado)
+            idtrabajador = trabajador["values"][0]
+
+        # Obtenemos los nuevos Valores
+
+            nombre = self.entNombre.get()
+            apPaterno = self.entApPaterno.get()
+            apMaterno = self.entApMaterno.get()
+            direccion = self.entDireccion.get()
+            telefono = self.entTelefono.get()
+            cargo = self.entCargo.get()
+            sueldo = self.entSueldo.get()
+            fechaIngreso = self.entFechaIngreso.get()
+            fechaSalida = self.entFechaSalida.get()
+
+        # Ahora Llamamos el metodo modificar de la Capa Negocios
+
+            resultado = self.capaNegocios.modificar_trabajador(idtrabajador, nombre, apPaterno, apMaterno, direccion, telefono, cargo, sueldo, fechaIngreso, fechaSalida)
+            
+            if "Exito" in resultado:
+                messagebox.showinfo("Exito", resultado)
+                self.arbolTrabajador.delete(*self.arbolTrabajador.get_children())
+                self.cargarTrabajador()
+                self.arbolTrabajador.update()
+                self.limpiarEntrys()
+            else:
+                messagebox.showerror("Error",resultado)
+        else:
+            messagebox.showwarning("Advertencia ","seleccione un trabajador en el Arbol")
+
+# if __name__ == "__main__":
+#     app = Trabajador()
+#     print(app.insertarTrabajador(9,"bbb","bbb","bbb","bbb","bbb","bbb","bbb","bbb"))
