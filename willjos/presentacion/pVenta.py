@@ -7,8 +7,16 @@ from tkinter import messagebox
 from tkinter import ttk
 import customtkinter as ctk
 
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from negocios.nVenta import nVenta
+
+
 class Venta:
     def __init__(self, frm1, frm3):
+
+        # Instancia de la capa de negocios para poder usar sus métodos
+        self.capaNegocios = nVenta()
+ 
         #Limpiamos el frm1 antes de mostrar los elem de Venta
         for widget in frm1.winfo_children():
             widget.destroy()
@@ -63,15 +71,15 @@ class Venta:
 
     # Colocamos los Botones crud en frm Crud
 
-        self.btnInsertar = ctk.CTkButton(self.frmCrud, text="Insertar")
+        self.btnInsertar = ctk.CTkButton(self.frmCrud, text="Insertar", command = self.insertarVenta)
         self.btnInsertar.grid(row=0, column=0, padx=5, pady=5, sticky="ew")
         self.frmCrud.grid_columnconfigure(0, weight=1)
 
-        self.btnModificar = ctk.CTkButton(self.frmCrud, text="Modificar")
+        self.btnModificar = ctk.CTkButton(self.frmCrud, text="Modificar", command = self.modificarVenta)
         self.btnModificar.grid(row=0, column=1, padx=5, pady=5, sticky="ew")
         self.frmCrud.grid_columnconfigure(1, weight=1)
 
-        self.btnEliminar = ctk.CTkButton(self.frmCrud, text="Eliminar")
+        self.btnEliminar = ctk.CTkButton(self.frmCrud, text="Eliminar", command = self.eliminarVenta)
         self.btnEliminar.grid(row=0, column=2, padx=5, pady=5, sticky="ew")
         self.frmCrud.grid_columnconfigure(2, weight=1)
 
@@ -80,15 +88,15 @@ class Venta:
         self.frmCrud.grid_columnconfigure(3, weight=1)
 
 
-        self.lblBuscarNombreCliente = ctk.CTkLabel(self.frmCrud, text="Buscar Nombre")
-        self.lblBuscarNombreCliente.grid(row=1, column=0, padx=10, pady=10)
+        self.lblBuscarIdventa = ctk.CTkLabel(self.frmCrud, text="Id venta")
+        self.lblBuscarIdventa.grid(row=1, column=0, padx=10, pady=10)
         self.frmCrud.grid_columnconfigure(0, weight=1)
 
         self.entBuscar = ctk.CTkEntry(self.frmCrud)
         self.entBuscar.grid(row=1, column=1, padx=10, pady=10)
         self.frmCrud.grid_columnconfigure(1, weight=1)
 
-        self.btnBuscar = ctk.CTkButton(self.frmCrud, text="Buscar")
+        self.btnBuscar = ctk.CTkButton(self.frmCrud, text="Buscar", command= self.buscarVenta)
         self.btnBuscar.grid(row=1, column=2, padx=5, pady=5, sticky="ew")
         self.frmCrud.grid_columnconfigure(2, weight=1)
 
@@ -99,7 +107,6 @@ class Venta:
         for widget in frm3.winfo_children():
             widget.destroy()
 
-        self.lblArbolVenta = tk.Label(frm3, text="Registros de Ventas")
         self.lblArbolVenta = ctk.CTkLabel(frm3, text="Registros de Ventas", font=ctk.CTkFont(size=18, weight="bold"))
         self.lblArbolVenta.pack(pady=(15, 10))
 
@@ -118,6 +125,142 @@ class Venta:
         self.arbolVenta.heading('#5', text='Id Cliente')
         self.arbolVenta.column('#5', anchor=CENTER, width=150)
 
-
         self.arbolVenta.pack(expand=True, fill="both", padx=15, pady=15)
 
+
+        # Para la seleccion del TreeView
+        self.arbolVenta.bind("<<TreeviewSelect>>", self.onSelectVenta)
+
+        # Cargamos los datos iniciales en el Treeview
+        self.cargarVenta()
+
+    def cargarVenta(self):
+        # Limpia el arbol antes de cargar nuevos datos
+        self.arbolVenta.delete(*self.arbolVenta.get_children())
+        # Obtiene las ventas desde la capa de negocios
+        ventas = self.capaNegocios.obtener_venta()
+        # Inserta cada venta en el Treeview
+        for venta in ventas:
+            self.arbolVenta.insert("", "end", values=venta)
+
+
+    def limpiarEntrys(self):
+        self.entIdVenta.delete(0,'end')
+        self.entFecha.delete(0,'end')
+        self.entTotal.delete(0,'end')
+        self.entFormaPago.delete(0,'end')
+        self.entIdCliente.delete(0,'end')
+
+
+    #Insertar Datos Venta
+    def insertarVenta(self):
+        # obtenemos valores de Entrys
+        idVenta = self.entIdVenta.get()
+        fecha = self.entFecha.get()
+        total = self.entTotal.get()
+        formaPago = self.entFormaPago.get()
+        idCliente = self.entIdCliente.get()
+
+        # Llamamos al metodo insertarVenta de la capa Negocios
+        resultado = self.capaNegocios.insertar_venta(idVenta, fecha, total, formaPago, idCliente)
+       
+        # Primero actualizamos el Treeview
+        self.cargarVenta()
+
+        if "Exito" in resultado:
+            messagebox.showinfo("Exito", resultado)
+                # Recarga los datos en el Treeview para mostrar la nueva venta
+            self.limpiarEntrys()
+
+        else: 
+            messagebox.showerror("Error", resultado)
+
+
+    def buscarVenta(self):
+        idVenta = self.entBuscar.get()
+        if not idVenta.strip():
+            messagebox.showwarning("Advertencia ","Ingresar el ID de la venta.")
+            return
+        ventas = self.capaNegocios.buscar_venta(idVenta)
+        self.arbolVenta.delete(*self.arbolVenta.get_children())
+        if ventas: # Si es encontrado
+            for venta in ventas:
+                self.arbolVenta.insert("","end", values=(venta[0],venta[1],venta[2],venta[3],venta[4]))
+            self.entBuscar.delete(0,'end')
+
+        else:
+            messagebox.showinfo("Informacion"," Venta no encontrada")
+            self.cargarVenta()
+            self.entBuscar.delete(0,'end')
+
+
+    # Metodo Para Seleccionar en Treeview
+    def onSelectVenta(self, event):
+        itemSeleccionado = self.arbolVenta.selection()
+        if itemSeleccionado:
+            item = self.arbolVenta.item(itemSeleccionado)
+        # Obtenemos el Item  seleccionado
+            venta = item["values"]
+        
+        # Cargamos los datos seleccionados en los entrys
+            self.entIdVenta.delete(0,'end')
+            self.entIdVenta.insert(0,venta[0])
+
+            self.entFecha.delete(0,'end')
+            self.entFecha.insert(0,venta[1])
+
+            self.entTotal.delete(0,'end')
+            self.entTotal.insert(0,venta[2])
+
+            self.entFormaPago.delete(0,'end')
+            self.entFormaPago.insert(0,venta[3])
+
+            self.entIdCliente.delete(0,'end')
+            self.entIdCliente.insert(0,venta[4])
+
+
+    def eliminarVenta(self):
+        itemSeleccionado = self.arbolVenta.selection()
+        if itemSeleccionado:
+            venta = self.arbolVenta.item(itemSeleccionado)
+            idVenta = venta["values"][0]
+            resultado = self.capaNegocios.eliminar_venta(idVenta)
+            if "Exito" in resultado:
+                messagebox.showinfo("Exito", resultado)
+
+                #Elimina la venta del arbol
+                self.arbolVenta.delete(itemSeleccionado)
+                self.limpiarEntrys()
+
+            else:
+                messagebox.showerror("Error", resultado)
+        
+        else:
+            messagebox.showwarning("Advertencia ","Seleccione una Venta para eliminar de la BD")
+
+
+    def modificarVenta(self):
+        itemSeleccionado =self.arbolVenta.selection()
+        if itemSeleccionado:
+            venta = self.arbolVenta.item(itemSeleccionado)
+            idVenta = venta["values"][0]
+
+        # Obtenemos los nuevos Valores
+            fecha = self.entFecha.get()
+            total = self.entTotal.get()
+            formaPago = self.entFormaPago.get()
+            idCliente = self.entIdCliente.get()
+
+        # Ahora Llamamos el metodo modificar de la Capa Negocios
+            resultado = self.capaNegocios.modificar_venta(idVenta, fecha, total, formaPago, idCliente)
+            
+            if "Exito" in resultado:
+                messagebox.showinfo("Exito", resultado)
+                self.arbolVenta.delete(*self.arbolVenta.get_children())
+                self.cargarVenta()
+                self.arbolVenta.update()
+                self.limpiarEntrys()
+            else:
+                messagebox.showerror("Error",resultado)
+        else:
+            messagebox.showwarning("Advertencia ","Seleccione una Venta en el Arbol")
