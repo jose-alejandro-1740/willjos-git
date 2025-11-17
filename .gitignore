@@ -1,0 +1,33 @@
+# Ignorar archivos compilados de Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Entornos virtuales
+venv/
+env/
+.venv/
+.env/
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Archivos de IDEs
+.vscode/
+.idea/
+
+# Archivos de empaquetado o compilación
+build/
+dist/
+*.egg-info/
+*.egg
+
+# Archivos temporales o logs
+*.log
+*.tmp
+
+# Bases de datos temporales
+*.sqlite3
+*.db
