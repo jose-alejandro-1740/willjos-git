@@ -9,7 +9,6 @@ venv/
 env/
 .venv/
 .env/
-.env.*
 
 # Archivos de sistema
 .DS_Store
@@ -18,8 +17,6 @@ Thumbs.db
 # Archivos de IDEs
 .vscode/
 .idea/
-*.swp
-*.swo
 
 # Archivos de empaquetado o compilación
 build/
@@ -30,31 +27,7 @@ dist/
 # Archivos temporales o logs
 *.log
 *.tmp
-*.bak
-*.old
 
 # Bases de datos temporales
 *.sqlite3
 *.db
-
-# Cachés de herramientas
-.cache/
-pytest_cache/
-.coverage
-coverage.xml
-htmlcov/
-
-# Configuración y secretos
-*.ini
-*.cfg
-*.toml
-*.yaml
-*.yml
-*.secret
-*.key
-
-# Archivos de Jupyter Notebook
-.ipynb_checkpoints/
-
-# Archivos de documentación generada
-docs/_build/
