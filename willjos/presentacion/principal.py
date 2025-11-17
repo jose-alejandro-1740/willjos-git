@@ -16,7 +16,6 @@ from pProyecto import Proyecto
 from pTrabajador import Trabajador
 from pTrabajadorProyecto import Trabajador_Proyecto
 from pVenta import Venta
-from pMedidor import Medidor
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from negocios import nCliente
@@ -88,8 +87,7 @@ class Principal(ctk.CTk):
             ("PROVEEDOR", lambda: Proveedor(self.frm1, self.frm3)),
             ("TRABAJADOR", lambda: Trabajador(self.frm1, self.frm3)),
             ("TRABAJADOR PROYECTO", lambda: Trabajador_Proyecto(self.frm1, self.frm3)),
-            ("VENTA", lambda: Venta(self.frm1, self.frm3)),
-            ("MEDIDOR", lambda: Medidor(self.frm1, self.frm3))
+            ("VENTA", lambda: Venta(self.frm1, self.frm3))
         ]
 
         for i, (text, command) in enumerate(buttons):
@@ -146,3 +144,5 @@ class Principal(ctk.CTk):
 if __name__ == "__main__":
     app = Principal()
     app.mainloop()
+
+
