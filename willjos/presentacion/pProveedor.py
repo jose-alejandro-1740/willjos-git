@@ -87,15 +87,15 @@ class Proveedor:
 
     # Colocamos los Botones crud en frm Crud
 
-        self.btnInsertar = ctk.CTkButton(self.frmCrud, text="Insertar")
+        self.btnInsertar = ctk.CTkButton(self.frmCrud, text="Insertar", command=self.InsertarProveedor)
         self.btnInsertar.grid(row=0, column=0, padx=5, pady=5, sticky="ew")
         self.frmCrud.grid_columnconfigure(0, weight=1)
 
-        self.btnModificar = ctk.CTkButton(self.frmCrud, text="Modificar")
+        self.btnModificar = ctk.CTkButton(self.frmCrud, text="Modificar", command=self.modificarProveedor)
         self.btnModificar.grid(row=0, column=1, padx=5, pady=5, sticky="ew")
         self.frmCrud.grid_columnconfigure(1, weight=1)
 
-        self.btnEliminar = ctk.CTkButton(self.frmCrud, text="Eliminar")
+        self.btnEliminar = ctk.CTkButton(self.frmCrud, text="Eliminar", command=self.eliminarProveedor)
         self.btnEliminar.grid(row=0, column=2, padx=5, pady=5, sticky="ew")
         self.frmCrud.grid_columnconfigure(2, weight=1)
 
@@ -104,15 +104,15 @@ class Proveedor:
         self.frmCrud.grid_columnconfigure(3, weight=1)
 
 
-        self.lblBuscarNombreCliente = ctk.CTkLabel(self.frmCrud, text="Buscar Nombre")
-        self.lblBuscarNombreCliente.grid(row=1, column=0, padx=10, pady=10)
+        self.lblBuscarNombreProveedor = ctk.CTkLabel(self.frmCrud, text="Nombre")
+        self.lblBuscarNombreProveedor.grid(row=1, column=0, padx=10, pady=10)
         self.frmCrud.grid_columnconfigure(0, weight=1)
 
         self.entBuscar = ctk.CTkEntry(self.frmCrud)
         self.entBuscar.grid(row=1, column=1, padx=10, pady=10)
         self.frmCrud.grid_columnconfigure(1, weight=1)
 
-        self.btnBuscar = ctk.CTkButton(self.frmCrud, text="Buscar")
+        self.btnBuscar = ctk.CTkButton(self.frmCrud, text="Buscar", command=self.buscarProveedor)
         self.btnBuscar.grid(row=1, column=2, padx=5, pady=5, sticky="ew")
         self.frmCrud.grid_columnconfigure(2, weight=1)
 
@@ -199,6 +199,110 @@ class Proveedor:
         else: 
             messagebox.showerror("Error", resultado)
 
+
+
+    def buscarProveedor(self):
+        nombreProveedor = self.entBuscar.get()
+        if not nombreProveedor.strip():
+            messagebox.showwarning("Advertencia ","Ingresar el nombre del proveedor. ")
+            return
+        proveedores = self.capaNegocios.buscar_proveedor(nombreProveedor)
+        self.arbolProveedor.delete(*self.arbolProveedor.get_children())
+        if proveedores: # Si es encontrado
+            for proveedor in proveedores:
+                self.arbolProveedor.insert("","end", values=(proveedor[0],proveedor[1],proveedor[2],proveedor[3],proveedor[4],proveedor[5],proveedor[6],proveedor[7]))
+            self.entBuscar.delete(0,'end')
+
+        else:
+            messagebox.showinfo("Informacion"," Proveedor no encontrado")
+            self.cargarProveedor()
+            self.entBuscar.delete(0,'end')
+
+
+    # Metodo Para Seleccionar en Treeview
+    def onSelectProveedor(self, event):
+        itemSeleccionado = self.arbolProveedor.selection()
+        if itemSeleccionado:
+            item = self.arbolProveedor.item(itemSeleccionado)
+        # Obtenemos el Item  seleccionado
+            proveedor = item["values"]
+        
+        # Cargamos los datos seleccionados en los entrys
+            self.entNombre.delete(0,'end')
+            self.entNombre.insert(0,proveedor[1])
+
+            self.entApPaterno.delete(0,'end')
+            self.entApPaterno.insert(0,proveedor[2])
+
+            self.entApMaterno.delete(0,'end')
+            self.entApMaterno.insert(0,proveedor[3])
+
+            self.entDireccion.delete(0,'end')
+            self.entDireccion.insert(0,proveedor[4])
+
+            self.entTelefono.delete(0,'end')
+            self.entTelefono.insert(0,proveedor[5])
+
+            self.entEmail.delete(0,'end')
+            self.entEmail.insert(0,proveedor[6])
+
+            self.entContacto.delete(0,'end')
+            self.entContacto.insert(0,proveedor[7])
+
+            self.entIdProveedor.delete(0,'end')
+            self.entIdProveedor.insert(0,proveedor[0])
+
+
+    def eliminarProveedor(self):
+        itemSeleccionado = self.arbolProveedor.selection()
+        if itemSeleccionado:
+            proveedor = self.arbolProveedor.item(itemSeleccionado)
+            idProveedor = proveedor["values"][0]
+            resultado = self.capaNegocios.eliminar_proveedor(idProveedor)
+            if "Exito" in resultado:
+                messagebox.showinfo("Exito", resultado)
+
+                #Elimina el cliente del arbol
+                self.arbolProveedor.delete(itemSeleccionado)
+                self.limpiarEntrys()
+
+            else:
+                messagebox.showerror("Error", resultado)
+        
+        else:
+            messagebox.showwarning("Advertencia ","Seleccione un proveedor para eliminar de la BD")
+
+
+    def modificarProveedor(self):
+        itemSeleccionado =self.arbolProveedor.selection()
+        if itemSeleccionado:
+            proveedor = self.arbolProveedor.item(itemSeleccionado)
+            idProveedor = proveedor["values"][0]
+
+        # Obtenemos los nuevos Valores
+
+            nombre = self.entNombre.get()
+            apPaterno = self.entApPaterno.get()
+            apMaterno = self.entApMaterno.get()
+            direccion = self.entDireccion.get()
+            telefono = self.entTelefono.get()
+            email = self.entEmail.get()
+            contacto = self.entContacto.get()
+
+        # Ahora Llamamos el metodo modificar de la Capa Negocios
+
+            resultado = self.capaNegocios.modificar_proveedor(idProveedor, nombre, apPaterno, apMaterno, direccion, telefono,email, contacto)
+            
+            if "Exito" in resultado:
+                messagebox.showinfo("Exito", resultado)
+                self.arbolProveedor.delete(*self.arbolProveedor.get_children())
+                self.cargarProveedor()
+                self.arbolProveedor.update()
+                self.limpiarEntrys()
+            else:
+                messagebox.showerror("Error",resultado)
+        else:
+            messagebox.showwarning("Advertencia ","seleccione un proveedor en el Arbol")
 
 
 
