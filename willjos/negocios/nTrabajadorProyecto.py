@@ -64,10 +64,9 @@ class nTrabajadorProyecto():
             return resultado
         
 
-
 """ 
 if __name__ =="__main__":
     objTrabajadorProyecto = nTrabajadorProyecto()
-    print(objTrabajadorProyecto.eliminar_trabajadorProyecto())
+    print(objTrabajadorProyecto.modificar_trabajadorProyecto(1,1,"Maestro"))
     print("Imprimir Aqui los datos")
-"""
+ """
