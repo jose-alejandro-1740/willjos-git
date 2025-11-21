@@ -207,8 +207,6 @@ class Venta:
             self.entFormaPago.insert(0, venta[3])
             self.entIdCliente.insert(0, venta[4])
             
-            # Deshabilitar edición de clave primaria
-            self.entIdVenta.configure(state='disabled')
 
     def eliminarVenta(self):
         itemSeleccionado = self.arbolVenta.selection()
