@@ -142,9 +142,11 @@ class Cliente:
         # Inserta cada cliente en el Treeview
         for cliente in clientes:
             self.arbolCliente.insert("", "end", values=cliente)
+            self.limpiarEntrys()
 
 
     def limpiarEntrys(self):
+        self.entIdClinete.delete(0,'end')
         self.entIdClinete.delete(0,'end')
         self.entNombre.delete(0,'end')
         self.entApPaterno.delete(0,'end')
@@ -171,11 +173,9 @@ class Cliente:
 
         
         if "Exito" in resultado:
-            messagebox.showinfo("Exito", resultado)
-                # Recarga los datos en el Treeview para mostrar el nuevo cliente
-                #self.cargarCliente()
+            messagebox.showinfo("Éxito", resultado)
+            # Limpiamos los entrys si la inserción fue exitosa
             self.limpiarEntrys()
-
         else: 
             messagebox.showerror("Error", resultado)
 
@@ -225,6 +225,10 @@ class Cliente:
             self.entIdClinete.delete(0,'end')
             self.entIdClinete.insert(0,cliente[0])
 
+            # # Deshabilitar edición de clave primaria
+            # self.entIdClinete.configure(state='disabled')
+
+
 
     def eliminarCliente(self):
         itemSeleccionado = self.arbolCliente.selection()
@@ -265,13 +269,10 @@ class Cliente:
             resultado = self.capaNegocios.modificar_cliente(idCliente, nombre, apPaterno, apMaterno, direccion, telefono)
             
             if "Exito" in resultado:
-                messagebox.showinfo("Exito", resultado)
-                self.arbolCliente.delete(*self.arbolCliente.get_children())
+                messagebox.showinfo("Éxito", resultado)
                 self.cargarCliente()
-                self.arbolCliente.update()
                 self.limpiarEntrys()
             else:
                 messagebox.showerror("Error",resultado)
         else:
-            messagebox.showwarning("Advertencia ","seleccione un Cliente en el Arbol")
-
+            messagebox.showwarning("Advertencia ","Seleccione un cliente en el árbol")

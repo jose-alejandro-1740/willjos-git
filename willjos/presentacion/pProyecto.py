@@ -118,7 +118,6 @@ class Proyecto:
         for widget in frm3.winfo_children():
             widget.destroy()
 
-        self.lblArbolProyecto = tk.Label(frm3, text="Registros de Proyecto")
         self.lblArbolProyecto = ctk.CTkLabel(frm3, text="Registros de Proyecto", font=ctk.CTkFont(size=18, weight="bold"))
         self.lblArbolProyecto.pack(pady=(15, 10))
 
