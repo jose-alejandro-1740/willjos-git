@@ -145,6 +145,8 @@ class Cliente:
 
 
     def limpiarEntrys(self):
+        # Habilitamos el entry del ID antes de limpiarlo
+        self.entIdClinete.configure(state='normal')
         self.entIdClinete.delete(0,'end')
         self.entNombre.delete(0,'end')
         self.entApPaterno.delete(0,'end')
@@ -224,6 +226,8 @@ class Cliente:
 
             self.entIdClinete.delete(0,'end')
             self.entIdClinete.insert(0,cliente[0])
+            # Deshabilitamos el Entry del ID para que no se pueda modificar
+            self.entIdClinete.configure(state='disabled')
 
 
     def eliminarCliente(self):
@@ -238,6 +242,8 @@ class Cliente:
                 #Elimina el cliente del arbol
                 self.arbolCliente.delete(itemSeleccionado)
                 self.limpiarEntrys()
+                # Habilitamos el entry del ID después de limpiar
+                self.entIdClinete.configure(state='normal')
 
             else:
                 messagebox.showerror("Error", resultado)
@@ -274,4 +280,3 @@ class Cliente:
                 messagebox.showerror("Error",resultado)
         else:
             messagebox.showwarning("Advertencia ","seleccione un Cliente en el Arbol")
-
