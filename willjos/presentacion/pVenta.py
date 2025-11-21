@@ -105,7 +105,6 @@ class Venta:
         for widget in frm3.winfo_children():
             widget.destroy()
 
-        self.lblArbolVenta = tk.Label(frm3, text="Registros de Ventas")
         self.lblArbolVenta = ctk.CTkLabel(frm3, text="Registros de Ventas", font=ctk.CTkFont(size=18, weight="bold"))
         self.lblArbolVenta.pack(pady=(15, 10))
 
