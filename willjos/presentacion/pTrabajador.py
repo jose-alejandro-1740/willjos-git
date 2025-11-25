@@ -115,7 +115,7 @@ class Trabajador:
         self.frmCrud.grid_columnconfigure(3, weight=1)
 
 
-        self.lblBuscarNombreCliente = ctk.CTkLabel(self.frmCrud, text="Buscar Nombre")
+        self.lblBuscarNombreCliente = ctk.CTkLabel(self.frmCrud, text="Nombre trabajador")
         self.lblBuscarNombreCliente.grid(row=1, column=0, padx=10, pady=10)
         self.frmCrud.grid_columnconfigure(0, weight=1)
 
@@ -161,7 +161,7 @@ class Trabajador:
 
         self.arbolTrabajador.pack(expand=True, fill="both", padx=15, pady=15)
 
-        # Para la seleccion del TreeView
+    # Para la seleccion del TreeView
         self.arbolTrabajador.bind("<<TreeviewSelect>>", self.onSelectTrabajador)
 
     # Cargamos los datos iniciales en el Treeview
