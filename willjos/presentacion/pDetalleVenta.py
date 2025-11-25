@@ -6,8 +6,15 @@ from tkinter import messagebox
 from tkinter import ttk
 import customtkinter as ctk
 
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from negocios.nDetalleVenta import nDetalleVenta
+
 class DetalleVenta:
     def __init__(self, frm1, frm3):
+
+        # Instancia de la capa de negocios para poder usar sus métodos
+        self.capaNegocios = nDetalleVenta()
+
         #Limpiamos el frm1 antes de mostrar los elem de Cliente
         for widget in frm1.winfo_children():
             widget.destroy()
@@ -31,8 +38,7 @@ class DetalleVenta:
         self.lblTitle.pack(pady=10)
 
     # Colocamos los Entrys 
-        self.lblIdDetalleVenta = tk.Label(self.frmEntrys, text="ID Detalle Venta")
-        # Colocamos los Entrys
+
         self.lblIdDetalleVenta = ctk.CTkLabel(self.frmEntrys, text="ID Detalle Venta")
         self.lblIdDetalleVenta.grid(row=0, column=0, padx=5, pady=5)
         self.entIdDetalleVenta = ctk.CTkEntry(self.frmEntrys)
@@ -50,7 +56,7 @@ class DetalleVenta:
         self.entPrecioUnidad.grid(row=2, column=1, padx=10, pady=10)
 
 
-        self.lblSubTotal = ctk.CTkLabel(self.frmEntrys, text="IdVenta")
+        self.lblSubTotal = ctk.CTkLabel(self.frmEntrys, text="Sub Total")
         self.lblSubTotal.grid(row=3, column=0, padx=10, pady=10)
         self.entSubTotal = ctk.CTkEntry(self.frmEntrys)
         self.entSubTotal.grid(row=3, column=1, padx=10, pady=10)
@@ -69,15 +75,15 @@ class DetalleVenta:
 
     # Colocamos los Botones crud en frm Crud
 
-        self.btnInsertar = ctk.CTkButton(self.frmCrud, text="Insertar")
+        self.btnInsertar = ctk.CTkButton(self.frmCrud, text="Insertar", command=self.insertarDetalleVenta)
         self.btnInsertar.grid(row=0, column=0, padx=5, pady=5, sticky="ew")
         self.frmCrud.grid_columnconfigure(0, weight=1)
 
-        self.btnModificar = ctk.CTkButton(self.frmCrud, text="Modificar")
+        self.btnModificar = ctk.CTkButton(self.frmCrud, text="Modificar", command=self.modificarDetalleVenta)
         self.btnModificar.grid(row=0, column=1, padx=5, pady=5, sticky="ew")
         self.frmCrud.grid_columnconfigure(1, weight=1)
 
-        self.btnEliminar = ctk.CTkButton(self.frmCrud, text="Eliminar")
+        self.btnEliminar = ctk.CTkButton(self.frmCrud, text="Eliminar", command=self.eliminarDetalleVenta)
         self.btnEliminar.grid(row=0, column=2, padx=5, pady=5, sticky="ew")
         self.frmCrud.grid_columnconfigure(2, weight=1)
 
@@ -86,15 +92,15 @@ class DetalleVenta:
         self.frmCrud.grid_columnconfigure(3, weight=1)
 
 
-        self.lblBuscarNombreCliente = ctk.CTkLabel(self.frmCrud, text="Buscar Nombre")
-        self.lblBuscarNombreCliente.grid(row=1, column=0, padx=10, pady=10)
+        self.lblBuscarId = ctk.CTkLabel(self.frmCrud, text="Buscar por ID")
+        self.lblBuscarId.grid(row=1, column=0, padx=10, pady=10)
         self.frmCrud.grid_columnconfigure(0, weight=1)
 
         self.entBuscar = ctk.CTkEntry(self.frmCrud)
         self.entBuscar.grid(row=1, column=1, padx=10, pady=10)
         self.frmCrud.grid_columnconfigure(1, weight=1)
 
-        self.btnBuscar = ctk.CTkButton(self.frmCrud, text="Buscar")
+        self.btnBuscar = ctk.CTkButton(self.frmCrud, text="Buscar", command=self.buscarDetalleVenta)
         self.btnBuscar.grid(row=1, column=2, padx=5, pady=5, sticky="ew")
         self.frmCrud.grid_columnconfigure(2, weight=1)
 
@@ -127,6 +133,138 @@ class DetalleVenta:
         self.arbolDetalleVenta.heading('#6', text='Id Producto')
         self.arbolDetalleVenta.column('#6', anchor=CENTER, width=100)
 
-
         self.arbolDetalleVenta.pack(expand=True, fill="both", padx=15, pady=15)
 
+
+        # Para la seleccion del TreeView
+        self.arbolDetalleVenta.bind("<<TreeviewSelect>>", self.onSelectDetalleVenta)
+
+        # Cargamos los datos iniciales en el Treeview
+        self.cargarDetalleVenta()
+
+    def cargarDetalleVenta(self):
+        # Limpia el arbol antes de cargar nuevos datos
+        self.arbolDetalleVenta.delete(*self.arbolDetalleVenta.get_children())
+        # Obtiene los detalles desde la capa de negocios
+        detalles = self.capaNegocios.obtener_detalleVenta()
+        # Inserta cada detalle en el Treeview
+        for detalle in detalles:
+            self.arbolDetalleVenta.insert("", "end", values=detalle)
+
+
+    def limpiarEntrys(self):
+        self.entIdDetalleVenta.delete(0,'end')
+        self.entCantidad.delete(0,'end')
+        self.entPrecioUnidad.delete(0,'end')
+        self.entSubTotal.delete(0,'end')
+        self.entIdVenta.delete(0,'end')
+        self.entIdProducto.delete(0,'end')
+
+
+    #Insertar Datos DetalleVenta
+    def insertarDetalleVenta(self):
+        # obtenemos valores de Entrys
+        id_detalle_venta = self.entIdDetalleVenta.get()
+        cantidad = self.entCantidad.get()
+        precio_unidad = self.entPrecioUnidad.get()
+        sub_total = self.entSubTotal.get()
+        id_venta = self.entIdVenta.get()
+        id_producto = self.entIdProducto.get()
+
+        # Llamamos al metodo insertar_detalle_venta de la capa Negocios
+        resultado = self.capaNegocios.insertar_detalleVenta(id_detalle_venta, cantidad, precio_unidad, sub_total, id_venta, id_producto)
+       
+        # Primero actualizamos el Treeview
+        self.cargarDetalleVenta()
+
+        
+        if "Exito" in resultado:
+            messagebox.showinfo("Exito", resultado)
+                # Recarga los datos en el Treeview para mostrar el nuevo detalle
+            self.limpiarEntrys()
+
+        else: 
+            messagebox.showerror("Error", resultado)
+
+
+    def buscarDetalleVenta(self):
+        id_detalle_venta = self.entBuscar.get()
+        if not id_detalle_venta.strip():
+            messagebox.showwarning("Advertencia ","Ingresar el ID del detalle de venta a buscar.")
+            return
+        detalles = self.capaNegocios.buscar_detalleVenta(id_detalle_venta)
+        self.arbolDetalleVenta.delete(*self.arbolDetalleVenta.get_children())
+        if detalles: # Si es encontrado
+            for detalle in detalles:
+                self.arbolDetalleVenta.insert("","end", values=detalle)
+            self.entBuscar.delete(0,'end')
+
+        else:
+            messagebox.showinfo("Informacion"," Detalle de venta no encontrado")
+            self.cargarDetalleVenta()
+            self.entBuscar.delete(0,'end')
+
+
+    # Metodo Para Seleccionar en Treeview
+    def onSelectDetalleVenta(self, event):
+        itemSeleccionado = self.arbolDetalleVenta.selection()
+        if itemSeleccionado:
+            item = self.arbolDetalleVenta.item(itemSeleccionado)
+        # Obtenemos el Item  seleccionado
+            detalle = item["values"]
+        
+        # Cargamos los datos seleccionados en los entrys
+            self.limpiarEntrys()
+            self.entIdDetalleVenta.insert(0, detalle[0])
+            self.entCantidad.insert(0, detalle[1])
+            self.entPrecioUnidad.insert(0, detalle[2])
+            self.entSubTotal.insert(0, detalle[3])
+            self.entIdVenta.insert(0, detalle[4])
+            self.entIdProducto.insert(0, detalle[5])
+
+
+    def eliminarDetalleVenta(self):
+        itemSeleccionado = self.arbolDetalleVenta.selection()
+        if itemSeleccionado:
+            detalle = self.arbolDetalleVenta.item(itemSeleccionado)
+            id_detalle_venta = detalle["values"][0]
+            resultado = self.capaNegocios.eliminar_detalleVenta(id_detalle_venta)
+            if "Exito" in resultado:
+                messagebox.showinfo("Exito", resultado)
+
+                #Elimina el detalle del arbol
+                self.arbolDetalleVenta.delete(itemSeleccionado)
+                self.limpiarEntrys()
+
+            else:
+                messagebox.showerror("Error", resultado)
+        
+        else:
+            messagebox.showwarning("Advertencia ","Seleccione un detalle de venta para eliminar.")
+
+
+    def modificarDetalleVenta(self):
+        itemSeleccionado = self.arbolDetalleVenta.selection()
+        if itemSeleccionado:
+            detalle = self.arbolDetalleVenta.item(itemSeleccionado)
+            id_detalle_venta = detalle["values"][0]
+
+        # Obtenemos los nuevos Valores
+            cantidad = self.entCantidad.get()
+            precio_unidad = self.entPrecioUnidad.get()
+            sub_total = self.entSubTotal.get()
+            id_venta = self.entIdVenta.get()
+            id_producto = self.entIdProducto.get()
+
+        # Ahora Llamamos el metodo modificar de la Capa Negocios
+
+            resultado = self.capaNegocios.modificar_detalleVenta(id_detalle_venta, cantidad, precio_unidad, sub_total, id_venta, id_producto)
+            
+            if "Exito" in resultado:
+                messagebox.showinfo("Exito", resultado)
+                self.cargarDetalleVenta()
+                self.limpiarEntrys()
+            else:
+                messagebox.showerror("Error",resultado)
+        else:
+            messagebox.showwarning("Advertencia ","Seleccione un detalle de venta en el árbol.")
