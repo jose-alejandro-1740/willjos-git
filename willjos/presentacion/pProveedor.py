@@ -147,6 +147,10 @@ class Proveedor:
 
         self.arbolProveedor.pack(expand=True, fill="both", padx=15, pady=15)
 
+        # Para la seleccion del TreeView
+        self.arbolProveedor.bind("<<TreeviewSelect>>", self.onSelectProveedor)
+
+
         # Cargamos los datos iniciales en el Treeview
         self.cargarProveedor()
 
