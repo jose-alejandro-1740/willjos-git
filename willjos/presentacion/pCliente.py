@@ -225,10 +225,6 @@ class Cliente:
             self.entIdClinete.delete(0,'end')
             self.entIdClinete.insert(0,cliente[0])
 
-            # # Deshabilitar edición de clave primaria
-            # self.entIdClinete.configure(state='disabled')
-
-
 
     def eliminarCliente(self):
         itemSeleccionado = self.arbolCliente.selection()
