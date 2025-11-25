@@ -85,15 +85,15 @@ class Material:
 
     # Colocamos los Botones crud en frm Crud
 
-        self.btnInsertar = ctk.CTkButton(self.frmCrud, text="Insertar")
+        self.btnInsertar = ctk.CTkButton(self.frmCrud, text="Insertar", command= self.InsertarMaterial)
         self.btnInsertar.grid(row=0, column=0, padx=5, pady=5, sticky="ew")
         self.frmCrud.grid_columnconfigure(0, weight=1)
 
-        self.btnModificar = ctk.CTkButton(self.frmCrud, text="Modificar")
+        self.btnModificar = ctk.CTkButton(self.frmCrud, text="Modificar", command= self.modificarMaterial)
         self.btnModificar.grid(row=0, column=1, padx=5, pady=5, sticky="ew")
         self.frmCrud.grid_columnconfigure(1, weight=1)
 
-        self.btnEliminar = ctk.CTkButton(self.frmCrud, text="Eliminar")
+        self.btnEliminar = ctk.CTkButton(self.frmCrud, text="Eliminar", command= self.eliminarMaterial)
         self.btnEliminar.grid(row=0, column=2, padx=5, pady=5, sticky="ew")
         self.frmCrud.grid_columnconfigure(2, weight=1)
 
@@ -102,7 +102,11 @@ class Material:
         self.frmCrud.grid_columnconfigure(3, weight=1)
 
 
+<<<<<<< HEAD
         self.lblBuscarMaterial = ctk.CTkLabel(self.frmCrud, text="Buscar Nombre")
+=======
+        self.lblBuscarMaterial = ctk.CTkLabel(self.frmCrud, text="Nombre material")
+>>>>>>> pMaterial
         self.lblBuscarMaterial.grid(row=1, column=0, padx=10, pady=10)
         self.frmCrud.grid_columnconfigure(0, weight=1)
 
@@ -110,7 +114,7 @@ class Material:
         self.entBuscar.grid(row=1, column=1, padx=10, pady=10)
         self.frmCrud.grid_columnconfigure(1, weight=1)
 
-        self.btnBuscar = ctk.CTkButton(self.frmCrud, text="Buscar")
+        self.btnBuscar = ctk.CTkButton(self.frmCrud, text="Buscar", command=self.buscarMaterial)
         self.btnBuscar.grid(row=1, column=2, padx=5, pady=5, sticky="ew")
         self.frmCrud.grid_columnconfigure(2, weight=1)
 
@@ -153,7 +157,11 @@ class Material:
 
 
         # Para la seleccion del TreeView
+<<<<<<< HEAD
         self.arbolMaterial.bind("<<TreeviewSelect>>", self.onSelectCliente)
+=======
+        self.arbolMaterial.bind("<<TreeviewSelect>>", self.onSelectMaterial)
+>>>>>>> pMaterial
 
         # Cargamos los datos iniciales en el Treeview
         self.cargarMaterial()
@@ -308,4 +316,7 @@ class Material:
                 messagebox.showerror("Error",resultado)
         else:
             messagebox.showwarning("Advertencia ","seleccione un material en el Arbol")
+<<<<<<< HEAD
 
+=======
+>>>>>>> pMaterial

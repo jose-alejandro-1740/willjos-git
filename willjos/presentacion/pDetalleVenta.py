@@ -6,15 +6,15 @@ from tkinter import messagebox
 from tkinter import ttk
 import customtkinter as ctk
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from negocios.nDetalleVenta import nDetalleVenta
-
 class DetalleVenta:
     def __init__(self, frm1, frm3):
+<<<<<<< HEAD
 
         # Instancia de la capa de negocios para poder usar sus métodos
         self.capaNegocios = nDetalleVenta()
 
+=======
+>>>>>>> pMaterial
         #Limpiamos el frm1 antes de mostrar los elem de Cliente
         for widget in frm1.winfo_children():
             widget.destroy()
@@ -75,15 +75,19 @@ class DetalleVenta:
 
     # Colocamos los Botones crud en frm Crud
 
+<<<<<<< HEAD
         self.btnInsertar = ctk.CTkButton(self.frmCrud, text="Insertar", command=self.insertarDetalleVenta)
+=======
+        self.btnInsertar = ctk.CTkButton(self.frmCrud, text="Insertar")
+>>>>>>> pMaterial
         self.btnInsertar.grid(row=0, column=0, padx=5, pady=5, sticky="ew")
         self.frmCrud.grid_columnconfigure(0, weight=1)
 
-        self.btnModificar = ctk.CTkButton(self.frmCrud, text="Modificar", command=self.modificarDetalleVenta)
+        self.btnModificar = ctk.CTkButton(self.frmCrud, text="Modificar")
         self.btnModificar.grid(row=0, column=1, padx=5, pady=5, sticky="ew")
         self.frmCrud.grid_columnconfigure(1, weight=1)
 
-        self.btnEliminar = ctk.CTkButton(self.frmCrud, text="Eliminar", command=self.eliminarDetalleVenta)
+        self.btnEliminar = ctk.CTkButton(self.frmCrud, text="Eliminar")
         self.btnEliminar.grid(row=0, column=2, padx=5, pady=5, sticky="ew")
         self.frmCrud.grid_columnconfigure(2, weight=1)
 
@@ -92,15 +96,24 @@ class DetalleVenta:
         self.frmCrud.grid_columnconfigure(3, weight=1)
 
 
+<<<<<<< HEAD
         self.lblBuscarId = ctk.CTkLabel(self.frmCrud, text="Buscar por ID")
         self.lblBuscarId.grid(row=1, column=0, padx=10, pady=10)
+=======
+        self.lblBuscarNombreCliente = ctk.CTkLabel(self.frmCrud, text="Buscar Nombre")
+        self.lblBuscarNombreCliente.grid(row=1, column=0, padx=10, pady=10)
+>>>>>>> pMaterial
         self.frmCrud.grid_columnconfigure(0, weight=1)
 
         self.entBuscar = ctk.CTkEntry(self.frmCrud)
         self.entBuscar.grid(row=1, column=1, padx=10, pady=10)
         self.frmCrud.grid_columnconfigure(1, weight=1)
 
+<<<<<<< HEAD
         self.btnBuscar = ctk.CTkButton(self.frmCrud, text="Buscar", command=self.buscarDetalleVenta)
+=======
+        self.btnBuscar = ctk.CTkButton(self.frmCrud, text="Buscar")
+>>>>>>> pMaterial
         self.btnBuscar.grid(row=1, column=2, padx=5, pady=5, sticky="ew")
         self.frmCrud.grid_columnconfigure(2, weight=1)
 
@@ -133,8 +146,10 @@ class DetalleVenta:
         self.arbolDetalleVenta.heading('#6', text='Id Producto')
         self.arbolDetalleVenta.column('#6', anchor=CENTER, width=100)
 
+
         self.arbolDetalleVenta.pack(expand=True, fill="both", padx=15, pady=15)
 
+<<<<<<< HEAD
 
         # Para la seleccion del TreeView
         self.arbolDetalleVenta.bind("<<TreeviewSelect>>", self.onSelectDetalleVenta)
@@ -268,3 +283,5 @@ class DetalleVenta:
                 messagebox.showerror("Error",resultado)
         else:
             messagebox.showwarning("Advertencia ","Seleccione un detalle de venta en el árbol.")
+=======
+>>>>>>> pMaterial

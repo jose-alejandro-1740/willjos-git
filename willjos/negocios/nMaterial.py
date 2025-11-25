@@ -6,6 +6,16 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 # Importamos la clase específica que necesitamos de la capa de datos
 from datos.dMaterial import dMaterial
 
+class MaterialModel(BaseModel):
+    id_material: int
+    nombre: str = Field(min_length=1)
+    descripcion: str = Field(min_length=1)
+    tipo: str = Field(min_length=1)
+    precio: float
+    stock: int
+    unidad: str = Field(min_length=1)
+    id_proveedor: int
+
 class nMaterial():
     def __init__(self):
         # creamos obj de clase negosioCliente
@@ -16,15 +26,15 @@ class nMaterial():
         return self.obj_material.obtenerMaterial()
     
     def insertar_material(self, id_material, nombre, descripcion, tipo, precio, stock, unidad, id_proveedor):
-        
-        # Pasamos los datos a la capa de datos para la inserción
-        resultado = self.obj_material.insertarMaterial(id_material, nombre, descripcion, tipo, precio, stock, unidad, id_proveedor) # La capa de datos aún usa camelCase
-
-        # Devolvemos un mensaje de éxito o error
-        if resultado:
-            return "Exito: Material insertado correctamente."
-        else:
-            return "Error: No se pudo insertar el material."
+        try:
+            MaterialModel(id_material=id_material, nombre=nombre, descripcion=descripcion, tipo=tipo, precio=precio, stock=stock, unidad=unidad, id_proveedor=id_proveedor)
+            resultado = self.obj_material.insertarMaterial(id_material, nombre, descripcion, tipo, precio, stock, unidad, id_proveedor)
+            if resultado:
+                return "Exito: Material insertado correctamente."
+            else:
+                return "Error: No se pudo insertar el material."
+        except ValidationError as e:
+            return f"Error de validación: {e}"
 
 
     def buscar_material(self, nombre_material):
@@ -53,21 +63,21 @@ class nMaterial():
 
 
     def modificar_material(self, id_material, nombre, descripcion, tipo, precio, stock, unidad, id_proveedor):
-        
-        # Pasamos los datos a la capa de datos para la modificar
-
-        # Devolvemos un mensaje de éxito o error
-        if not nombre or not descripcion or not tipo or not precio or not stock or not unidad or not id_proveedor:
-            return "Error: No se pudo modificar el cliente."
-        else:
-            resultado = self.obj_material.modificarMaterial(id_material, nombre, descripcion, tipo, precio, stock, unidad, id_proveedor) # La capa de datos aún usa camelCase
-            return resultado
+        try:
+            MaterialModel(id_material=id_material, nombre=nombre, descripcion=descripcion, tipo=tipo, precio=precio, stock=stock, unidad=unidad, id_proveedor=id_proveedor)
+            resultado = self.obj_material.modificarMaterial(id_material, nombre, descripcion, tipo, precio, stock, unidad, id_proveedor)
+            if resultado:
+                return "Exito: Material modificado correctamente."
+            else:
+                return "Error: No se pudo modificar el material."
+        except ValidationError as e:
+            return f"Error de validación: {e}"
         
 
 
 """ 
 if __name__ =="__main__":
     objMaterial = nMaterial()
-    print(objMaterial.(""))
+    # print(objMaterial.(""))
     print("Imprimir Aqui los datos")
  """
