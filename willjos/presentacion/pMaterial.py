@@ -9,7 +9,6 @@ import customtkinter as ctk
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from negocios.nMaterial import nMaterial
 
-
 class Material:
     def __init__(self, frm1, frm3):
 
@@ -123,7 +122,6 @@ class Material:
         for widget in frm3.winfo_children():
             widget.destroy()
        
-        self.lblArbolMaterial = tk.Label(frm3, text="Registros de Material")
         self.lblArbolMaterial = ctk.CTkLabel(frm3, text="Registros de Material", font=ctk.CTkFont(size=18, weight="bold"))
         self.lblArbolMaterial.pack(pady=(15, 10))
 
@@ -148,12 +146,10 @@ class Material:
         self.arbolMaterial.heading('#8', text='Id Proveedor')
         self.arbolMaterial.column('#8', anchor=CENTER, width=50)
 
-
         self.arbolMaterial.pack(expand=True, fill="both", padx=15, pady=15)
 
-
         # Para la seleccion del TreeView
-        self.arbolMaterial.bind("<<TreeviewSelect>>", self.onSelectCliente)
+        self.arbolMaterial.bind("<<TreeviewSelect>>", self.onSelectMaterial)
 
         # Cargamos los datos iniciales en el Treeview
         self.cargarMaterial()
