@@ -99,7 +99,7 @@ class Proyecto:
         self.frmCrud.grid_columnconfigure(3, weight=1)
 
 
-        self.lblBuscarNombreCliente = ctk.CTkLabel(self.frmCrud, text="Buscar Nombre")
+        self.lblBuscarNombreCliente = ctk.CTkLabel(self.frmCrud, text="Nombre proyecto")
         self.lblBuscarNombreCliente.grid(row=1, column=0, padx=10, pady=10)
         self.frmCrud.grid_columnconfigure(0, weight=1)
 
