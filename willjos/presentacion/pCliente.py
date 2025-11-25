@@ -242,6 +242,8 @@ class Cliente:
                 #Elimina el cliente del arbol
                 self.arbolCliente.delete(itemSeleccionado)
                 self.limpiarEntrys()
+                # Habilitamos el entry del ID después de limpiar
+                self.entIdClinete.configure(state='normal')
 
             else:
                 messagebox.showerror("Error", resultado)
