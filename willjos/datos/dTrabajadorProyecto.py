@@ -69,7 +69,7 @@ class dTrabajadorProyecto:
         cursor = None
         try: 
             cursor = self.conn.conexion.cursor() # crea el buscador Cursor
-            cursor.execute("update trabajador_proyecto set id_trabajador = %s, rol = %s where id_trabajador = %s",(id_proyecto, rol, id_trabajador))            
+            cursor.execute("UPDATE trabajador_proyecto SET rol = %s WHERE id_trabajador = %s AND id_proyecto = %s", (rol, id_trabajador, id_proyecto))
             self.conn.conexion.commit()
             return "Exito al modificar datos de la tabla trabajador proyecto"
         except Exception as e:
