@@ -72,15 +72,15 @@ class Producto:
 
     # Colocamos los Botones crud en frm Crud
 
-        self.btnInsertar = ctk.CTkButton(self.frmCrud, text="Insertar")
+        self.btnInsertar = ctk.CTkButton(self.frmCrud, text="Insertar", command=self.InsertarProducto)
         self.btnInsertar.grid(row=0, column=0, padx=5, pady=5, sticky="ew")
         self.frmCrud.grid_columnconfigure(0, weight=1)
 
-        self.btnModificar = ctk.CTkButton(self.frmCrud, text="Modificar")
+        self.btnModificar = ctk.CTkButton(self.frmCrud, text="Modificar", command=self.modificarProducto)
         self.btnModificar.grid(row=0, column=1, padx=5, pady=5, sticky="ew")
         self.frmCrud.grid_columnconfigure(1, weight=1)
 
-        self.btnEliminar = ctk.CTkButton(self.frmCrud, text="Eliminar")
+        self.btnEliminar = ctk.CTkButton(self.frmCrud, text="Eliminar", command=self.eliminarProducto)
         self.btnEliminar.grid(row=0, column=2, padx=5, pady=5, sticky="ew")
         self.frmCrud.grid_columnconfigure(2, weight=1)
 
@@ -89,15 +89,15 @@ class Producto:
         self.frmCrud.grid_columnconfigure(3, weight=1)
 
 
-        self.lblBuscarNombreCliente = ctk.CTkLabel(self.frmCrud, text="Buscar Nombre")
-        self.lblBuscarNombreCliente.grid(row=1, column=0, padx=10, pady=10)
+        self.lblBuscarNombreProducto = ctk.CTkLabel(self.frmCrud, text="Nombre producto")
+        self.lblBuscarNombreProducto.grid(row=1, column=0, padx=10, pady=10)
         self.frmCrud.grid_columnconfigure(0, weight=1)
 
         self.entBuscar = ctk.CTkEntry(self.frmCrud)
         self.entBuscar.grid(row=1, column=1, padx=10, pady=10)
         self.frmCrud.grid_columnconfigure(1, weight=1)
 
-        self.btnBuscar = ctk.CTkButton(self.frmCrud, text="Buscar")
+        self.btnBuscar = ctk.CTkButton(self.frmCrud, text="Buscar",command=self.buscarProducto)
         self.btnBuscar.grid(row=1, column=2, padx=5, pady=5, sticky="ew")
         self.frmCrud.grid_columnconfigure(2, weight=1)
 
@@ -127,6 +127,10 @@ class Producto:
         self.arbolProducto.column('#6', anchor=CENTER, width=100)
 
         self.arbolProducto.pack(expand=True, fill="both", padx=15, pady=15)
+
+        # Para la seleccion del TreeView
+        self.arbolProducto.bind("<<TreeviewSelect>>", self.onSelectProducto)
+
 
         # Cargamos los datos iniciales en el Treeview
         self.cargarProducto()
@@ -175,6 +179,102 @@ class Producto:
 
         else: 
             messagebox.showerror("Error", resultado)
+            
+
+    def buscarProducto(self):
+        nombreProducto = self.entBuscar.get()
+        if not nombreProducto.strip():
+            messagebox.showwarning("Advertencia ","Ingresar el nombre del producto.")
+            return
+        productos = self.capaNegocios.buscar_producto(nombreProducto)
+        self.arbolProducto.delete(*self.arbolProducto.get_children())
+        if productos: # Si es encontrado
+            for producto in productos:
+                self.arbolProducto.insert("","end", values=(producto[0],producto[1],producto[2],producto[3],producto[4],producto[5]))
+            self.entBuscar.delete(0,'end')
+
+        else:
+            messagebox.showinfo("Informacion"," Producto no encontrado")
+            self.cargarProducto()
+            self.entBuscar.delete(0,'end')
+
+
+    # Metodo Para Seleccionar en Treeview
+    def onSelectProducto(self, event):
+        itemSeleccionado = self.arbolProducto.selection()
+        if itemSeleccionado:
+            item = self.arbolProducto.item(itemSeleccionado)
+        # Obtenemos el Item  seleccionado
+            producto = item["values"]
+        
+        # Cargamos los datos seleccionados en los entrys
+            self.entNombre.delete(0,'end')
+            self.entNombre.insert(0,producto[1])
+
+            self.entDescripcion.delete(0,'end')
+            self.entDescripcion.insert(0,producto[2])
+
+            self.entAncho.delete(0,'end')
+            self.entAncho.insert(0,producto[3])
+
+            self.entAlto.delete(0,'end')
+            self.entAlto.insert(0,producto[4])
+
+            self.entPrecio.delete(0,'end')
+            self.entPrecio.insert(0,producto[5])
+
+            self.entIdProducto.delete(0,'end')
+            self.entIdProducto.insert(0,producto[0])
+
+
+    def eliminarProducto(self):
+        itemSeleccionado = self.arbolProducto.selection()
+        if itemSeleccionado:
+            producto = self.arbolProducto.item(itemSeleccionado)
+            idProducto = producto["values"][0]
+            resultado = self.capaNegocios.eliminar_producto(idProducto)
+            if "Exito" in resultado:
+                messagebox.showinfo("Exito", resultado)
+
+                #Elimina el cliente del arbol
+                self.arbolProducto.delete(itemSeleccionado)
+                self.limpiarEntrys()
+
+            else:
+                messagebox.showerror("Error", resultado)
+        
+        else:
+            messagebox.showwarning("Advertencia ","Seleccione un Clienten para eliminar de la BD")
+
+
+    def modificarProducto(self):
+        itemSeleccionado =self.arbolProducto.selection()
+        if itemSeleccionado:
+            producto = self.arbolProducto.item(itemSeleccionado)
+            idProducto = producto["values"][0]
+
+        # Obtenemos los nuevos Valores
+
+            nombre = self.entNombre.get()
+            descripcion = self.entDescripcion.get()
+            ancho = self.entAncho.get()
+            alto = self.entAlto.get()
+            precio = self.entPrecio.get()
+
+        # Ahora Llamamos el metodo modificar de la Capa Negocios
+
+            resultado = self.capaNegocios.modificar_producto(idProducto, nombre, descripcion, ancho, alto, precio)
+            
+            if "Exito" in resultado:
+                messagebox.showinfo("Exito", resultado)
+                self.arbolProducto.delete(*self.arbolProducto.get_children())
+                self.cargarProducto()
+                self.arbolProducto.update()
+                self.limpiarEntrys()
+            else:
+                messagebox.showerror("Error",resultado)
+        else:
+            messagebox.showwarning("Advertencia ","seleccione un Cliente en el Arbol")
 
 
 
