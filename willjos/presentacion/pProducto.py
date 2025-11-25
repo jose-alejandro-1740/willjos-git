@@ -471,6 +471,103 @@ class Producto:
             messagebox.showwarning("Advertencia ","seleccione un Cliente en el Arbol")
 
 
+
+    def buscarProducto(self):
+        nombreProducto = self.entBuscar.get()
+        if not nombreProducto.strip():
+            messagebox.showwarning("Advertencia ","Ingresar el nombre del producto.")
+            return
+        productos = self.capaNegocios.buscar_producto(nombreProducto)
+        self.arbolProducto.delete(*self.arbolProducto.get_children())
+        if productos: # Si es encontrado
+            for producto in productos:
+                self.arbolProducto.insert("","end", values=(producto[0],producto[1],producto[2],producto[3],producto[4],producto[5]))
+            self.entBuscar.delete(0,'end')
+
+        else:
+            messagebox.showinfo("Informacion"," Producto no encontrado")
+            self.cargarProducto()
+            self.entBuscar.delete(0,'end')
+
+
+    # Metodo Para Seleccionar en Treeview
+    def onSelectProducto(self, event):
+        itemSeleccionado = self.arbolProducto.selection()
+        if itemSeleccionado:
+            item = self.arbolProducto.item(itemSeleccionado)
+        # Obtenemos el Item  seleccionado
+            producto = item["values"]
+        
+        # Cargamos los datos seleccionados en los entrys
+            self.entNombre.delete(0,'end')
+            self.entNombre.insert(0,producto[1])
+
+            self.entDescripcion.delete(0,'end')
+            self.entDescripcion.insert(0,producto[2])
+
+            self.entAncho.delete(0,'end')
+            self.entAncho.insert(0,producto[3])
+
+            self.entAlto.delete(0,'end')
+            self.entAlto.insert(0,producto[4])
+
+            self.entPrecio.delete(0,'end')
+            self.entPrecio.insert(0,producto[5])
+
+            self.entIdProducto.delete(0,'end')
+            self.entIdProducto.insert(0,producto[0])
+
+
+    def eliminarProducto(self):
+        itemSeleccionado = self.arbolProducto.selection()
+        if itemSeleccionado:
+            producto = self.arbolProducto.item(itemSeleccionado)
+            idProducto = producto["values"][0]
+            resultado = self.capaNegocios.eliminar_producto(idProducto)
+            if "Exito" in resultado:
+                messagebox.showinfo("Exito", resultado)
+
+                #Elimina el cliente del arbol
+                self.arbolProducto.delete(itemSeleccionado)
+                self.limpiarEntrys()
+
+            else:
+                messagebox.showerror("Error", resultado)
+        
+        else:
+            messagebox.showwarning("Advertencia ","Seleccione un Clienten para eliminar de la BD")
+
+
+    def modificarProducto(self):
+        itemSeleccionado =self.arbolProducto.selection()
+        if itemSeleccionado:
+            producto = self.arbolProducto.item(itemSeleccionado)
+            idProducto = producto["values"][0]
+
+        # Obtenemos los nuevos Valores
+
+            nombre = self.entNombre.get()
+            descripcion = self.entDescripcion.get()
+            ancho = self.entAncho.get()
+            alto = self.entAlto.get()
+            precio = self.entPrecio.get()
+
+        # Ahora Llamamos el metodo modificar de la Capa Negocios
+
+            resultado = self.capaNegocios.modificar_producto(idProducto, nombre, descripcion, ancho, alto, precio)
+            
+            if "Exito" in resultado:
+                messagebox.showinfo("Exito", resultado)
+                self.arbolProducto.delete(*self.arbolProducto.get_children())
+                self.cargarProducto()
+                self.arbolProducto.update()
+                self.limpiarEntrys()
+            else:
+                messagebox.showerror("Error",resultado)
+        else:
+            messagebox.showwarning("Advertencia ","seleccione un Cliente en el Arbol")
+
+
       
 
 
