@@ -72,15 +72,15 @@ class Producto:
 
     # Colocamos los Botones crud en frm Crud
 
-        self.btnInsertar = ctk.CTkButton(self.frmCrud, text="Insertar")
+        self.btnInsertar = ctk.CTkButton(self.frmCrud, text="Insertar", command=self.InsertarProducto)
         self.btnInsertar.grid(row=0, column=0, padx=5, pady=5, sticky="ew")
         self.frmCrud.grid_columnconfigure(0, weight=1)
 
-        self.btnModificar = ctk.CTkButton(self.frmCrud, text="Modificar")
+        self.btnModificar = ctk.CTkButton(self.frmCrud, text="Modificar", command=self.modificarProducto)
         self.btnModificar.grid(row=0, column=1, padx=5, pady=5, sticky="ew")
         self.frmCrud.grid_columnconfigure(1, weight=1)
 
-        self.btnEliminar = ctk.CTkButton(self.frmCrud, text="Eliminar")
+        self.btnEliminar = ctk.CTkButton(self.frmCrud, text="Eliminar", command=self.eliminarProducto)
         self.btnEliminar.grid(row=0, column=2, padx=5, pady=5, sticky="ew")
         self.frmCrud.grid_columnconfigure(2, weight=1)
 
@@ -89,15 +89,15 @@ class Producto:
         self.frmCrud.grid_columnconfigure(3, weight=1)
 
 
-        self.lblBuscarNombreCliente = ctk.CTkLabel(self.frmCrud, text="Buscar Nombre")
-        self.lblBuscarNombreCliente.grid(row=1, column=0, padx=10, pady=10)
+        self.lblBuscarNombreProducto = ctk.CTkLabel(self.frmCrud, text="Nombre producto")
+        self.lblBuscarNombreProducto.grid(row=1, column=0, padx=10, pady=10)
         self.frmCrud.grid_columnconfigure(0, weight=1)
 
         self.entBuscar = ctk.CTkEntry(self.frmCrud)
         self.entBuscar.grid(row=1, column=1, padx=10, pady=10)
         self.frmCrud.grid_columnconfigure(1, weight=1)
 
-        self.btnBuscar = ctk.CTkButton(self.frmCrud, text="Buscar")
+        self.btnBuscar = ctk.CTkButton(self.frmCrud, text="Buscar",command=self.buscarProducto)
         self.btnBuscar.grid(row=1, column=2, padx=5, pady=5, sticky="ew")
         self.frmCrud.grid_columnconfigure(2, weight=1)
 
@@ -127,6 +127,10 @@ class Producto:
         self.arbolProducto.column('#6', anchor=CENTER, width=100)
 
         self.arbolProducto.pack(expand=True, fill="both", padx=15, pady=15)
+
+        # Para la seleccion del TreeView
+        self.arbolProducto.bind("<<TreeviewSelect>>", self.onSelectProducto)
+
 
         # Cargamos los datos iniciales en el Treeview
         self.cargarProducto()
@@ -175,8 +179,7 @@ class Producto:
 
         else: 
             messagebox.showerror("Error", resultado)
-
-
+            
 
     def buscarProducto(self):
         nombreProducto = self.entBuscar.get()
